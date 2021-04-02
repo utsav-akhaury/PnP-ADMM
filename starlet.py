@@ -108,7 +108,15 @@ def istar2d(wtOri,gen2=True):
     return imRec
 
 
-def ST(image, beta, sigma):
+def conv(image, kernel):
+    
+    x = np.fft.fftshift(np.fft.fftn(image))
+    y = np.fft.fftshift(np.fft.fftn(np.rot90(kernel, 2)))
+
+    return np.real(np.fft.fftshift(np.fft.ifftn(np.fft.ifftshift(x * y))))
+
+
+def ST(image, beta, sigma, psf):
     
     # HABIBI, PUT WHATEVER SIGMA YOU WANT HERE, PLEASE & THANKS
     scl = int(np.ceil(np.log2(np.sqrt(image.size))))
@@ -116,7 +124,7 @@ def ST(image, beta, sigma):
     dirac = np.zeros(shape)
     dirac[shape[0]//2, shape[1]//2] = 1.
     scales = star2d(dirac, scale=scl)
-    std_scales = np.array([np.linalg.norm(scale,'fro') for scale in scales])
+    std_scales = np.array([np.linalg.norm(conv(scale, psf),'fro') for scale in scales])
   
     sigma_scales = sigma * std_scales
 
