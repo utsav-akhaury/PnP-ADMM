@@ -21,12 +21,12 @@ def b3spline_fast(step_hole):
     return kernel2d
 
 
-def hard_thresh(signal, threshold):
+def hard_thresh(data, threshold):
     """This function returns the result of a hard thresholding operation.
     INPUT: signal, Numpy Array
            threshold, Numpy Array
     OUTPUT: res, Numpy Array"""
-    res = signal*(np.abs(signal)>=threshold)
+    res = (1.0 - threshold/np.abs(data)) * data
     return res
 
 
@@ -144,4 +144,4 @@ def ST(image, beta, sigma, psf):
     alpha[:-1] = MS_hard_thresh(alpha[:-1], beta*thresholds[-1])
 
     # Apply the adjoint of the starlets on alpha
-    return istar2d(alpha)
+    return istar2d(alpha), thresholds, scales
