@@ -21,8 +21,8 @@ def b3spline_fast(step_hole):
     return kernel2d
 
 
-def hard_thresh(data, threshold):
-    """This function returns the result of a hard thresholding operation.
+def soft_thresh(data, threshold):
+    """This function returns the result of a soft thresholding operation.
     INPUT: signal, Numpy Array
            threshold, Numpy Array
     OUTPUT: res, Numpy Array"""
@@ -30,8 +30,8 @@ def hard_thresh(data, threshold):
     return res
 
 
-def MS_hard_thresh(wave_coef, n_sigma):
-    """This function returns the result of a multi-scale hard thresholding
+def MS_soft_thresh(wave_coef, n_sigma):
+    """This function returns the result of a multi-scale soft thresholding
     operation perfromed on wave_coef and using the coefficients of n_sigma as
     thresholds.
     INPUT: wave_coef, Numpy Array
@@ -40,7 +40,7 @@ def MS_hard_thresh(wave_coef, n_sigma):
     wave_coef_rec_MS = np.zeros(wave_coef.shape)
     for i,wave in enumerate(wave_coef):
         # Denoise image
-        wave_coef_rec_MS[i,:,:] = hard_thresh(wave, n_sigma[i])
+        wave_coef_rec_MS[i,:,:] = soft_thresh(wave, n_sigma[i])
     return wave_coef_rec_MS
 
 
@@ -141,7 +141,7 @@ def ST(image, beta, sigma, psf):
     alpha = star2d(image, scale=scl)
 
     # Multiscale threshold except coarse scale
-    alpha[:-1] = MS_hard_thresh(alpha[:-1], beta*thresholds[-1])
+    alpha[:-1] = MS_soft_thresh(alpha[:-1], beta*thresholds[-1])
 
     # Apply the adjoint of the starlets on alpha
     return istar2d(alpha), thresholds, scales
