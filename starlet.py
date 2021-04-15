@@ -21,12 +21,12 @@ def b3spline_fast(step_hole):
     return kernel2d
 
 
-def soft_thresh(data, threshold):
+def soft_thresh(signal, threshold):
     """This function returns the result of a soft thresholding operation.
     INPUT: signal, Numpy Array
            threshold, Numpy Array
     OUTPUT: res, Numpy Array"""
-    res = (1.0 - threshold/np.abs(data)) * data
+    res = np.sign(signal) * (np.abs(signal) - threshold) * (np.abs(signal) >= threshold)
     return res
 
 
