@@ -119,6 +119,38 @@ def plot_iter(final_im, gal_target, y, k):
 
     plt.show(fig)
     
+    
+def plot_iter_gs(final_im, gal_target, y, k):
+    
+    fig = plt.subplots(1,3, figsize=(25,25))
+            
+    plt.subplot(131)
+    plt.title('Reconstruction after {} iterations'.format(k))
+    ax1 = plt.gca()
+    rec = tf.keras.backend.get_value(final_im)
+    im1 = ax1.imshow(rec)
+    divider = make_axes_locatable(ax1)
+    cax1 = divider.append_axes("right", size="5%", pad=0.05)
+    plt.colorbar(im1, cax=cax1)
+
+    plt.subplot(132)
+    plt.title('Gist Stern')
+    ax2 = plt.gca()
+    im2 = ax2.imshow(final_im, cmap='gist_stern')
+    divider = make_axes_locatable(ax2)
+    cax2 = divider.append_axes("right", size="5%", pad=0.05)
+    plt.colorbar(im2, cax=cax2)
+
+    plt.subplot(133)
+    plt.title('Intensity Plot (Central Slice)')
+    ax3 = plt.gca()
+    ax3.plot(tf.keras.backend.get_value(final_im)[y.get_shape().as_list()[0]//2,:], label='rec_im')           
+    ax3.plot(gal_target[y.get_shape().as_list()[0]//2,:], label='target')  
+    plt.legend()
+    ax3.set_aspect(1.0/ax3.get_data_ratio())
+
+    plt.show(fig)
+    
  
     
 def plot_iter_np(final_im, gal, y, k):
