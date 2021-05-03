@@ -1,7 +1,6 @@
 import numpy as np
 from scipy.signal import convolve2d
 
-
 def b3spline_fast(step_hole):
     """This function returns 2D B3-spline kernel for the 'a trou' algorithm.
     INPUT:  step_hole, non-negative integer(number of holes)
@@ -20,7 +19,6 @@ def b3spline_fast(step_hole):
     kernel2d = np.dot(kernel1d.T,kernel1d)
     return kernel2d
 
-
 def soft_thresh(signal, threshold):
     """This function returns the result of a soft thresholding operation.
     INPUT: signal, Numpy Array
@@ -28,7 +26,6 @@ def soft_thresh(signal, threshold):
     OUTPUT: res, Numpy Array"""
     res = np.sign(signal) * (np.abs(signal) - threshold) * (np.abs(signal) >= threshold)
     return res
-
 
 def MS_soft_thresh(wave_coef, n_sigma):
     """This function returns the result of a multi-scale soft thresholding
@@ -42,7 +39,6 @@ def MS_soft_thresh(wave_coef, n_sigma):
         # Denoise image
         wave_coef_rec_MS[i,:,:] = soft_thresh(wave, n_sigma[i])
     return wave_coef_rec_MS
-
 
 def star2d(im,scale,gen2=True):
     """This function returns the starlet transform of an image.
@@ -72,7 +68,6 @@ def star2d(im,scale,gen2=True):
     wt[nz-1,:,:] = np.copy(im_out)
 
     return wt
-
 
 def istar2d(wtOri,gen2=True):
     """This function reconstructs the image from its starlet transformation.
@@ -107,14 +102,12 @@ def istar2d(wtOri,gen2=True):
             
     return imRec
 
-
 def conv(image, kernel):
     
     x = np.fft.fftshift(np.fft.fftn(image))
     y = np.fft.fftshift(np.fft.fftn(np.rot90(kernel, 2)))
 
     return np.real(np.fft.fftshift(np.fft.ifftn(np.fft.ifftshift(x * y))))
-
 
 def ST(image, beta, sigma, psf):
     
