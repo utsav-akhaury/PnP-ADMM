@@ -4,9 +4,9 @@ import matplotlib.pyplot as plt
 from matplotlib import gridspec
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 
-
 def comparison(x_opt, gal_target_tf, gal_input_tf, psf_tf, fftconvolve):
 
+    print()
     temp = tf.concat([x_opt, gal_target_tf], 1)
 
     fig = plt.figure(figsize=(20,20))
@@ -30,7 +30,6 @@ def comparison(x_opt, gal_target_tf, gal_input_tf, psf_tf, fftconvolve):
     plt.colorbar(im2, cax=cax2)
 
     plt.tight_layout()
-
 
     fig2 = plt.subplots(1,3, figsize=(24,24))
     plt.subplot(131)
@@ -59,34 +58,30 @@ def comparison(x_opt, gal_target_tf, gal_input_tf, psf_tf, fftconvolve):
     plt.colorbar(im3, cax=cax3)
 
     plt.show(fig2)
+            
+def nmse_cost(nmse_arr, cost, n_iter):
     
-    
-    
-def nmse(nmse_arr, n_iter):
+    print()
     min_nmse = np.min(nmse_arr)
     min_iter_nmse = np.where(nmse_arr == min_nmse)[0] + 1
-
-    plt.figure(figsize=(16,8))
+    plt.figure(figsize=(16,4))
+    plt.subplot(121)
     plt.plot(np.arange(1,n_iter+1), nmse_arr)
     plt.title('NMSE vs. # Iterations')
     plt.xlabel('Iterations')
     plt.ylabel('NMSE')
-    plt.show()
-    print('\nMinimum NMSE = {} (at {} iterations)'.format(min_nmse, min_iter_nmse))
     
-    
-def cost(cost, n_iter):
     min_cost = np.min(cost)
     min_iter_cost = np.where(cost == min_cost)[0] + 1
-
-    plt.figure(figsize=(16,8))
+    plt.subplot(122)
     plt.plot(np.arange(1,n_iter+1), cost)
     plt.title('Cost vs. # Iterations')
     plt.xlabel('Iterations')
     plt.ylabel('Cost')
     plt.show()
-    print('\nMinimum Cost = {} (at {} iterations)'.format(min_cost, min_iter_cost))
-    
+    print('\nMinimum NMSE = {} (at {} iterations)'.format(min_nmse, min_iter_nmse))
+    print('Minimum Cost = {} (at {} iterations)'.format(min_cost, min_iter_cost))    
+    plt.show()    
     
 def plot_iter(final_im, gal_target, y, k):
     
@@ -117,8 +112,7 @@ def plot_iter(final_im, gal_target, y, k):
     plt.legend()
     ax3.set_aspect(1.0/ax3.get_data_ratio())
 
-    plt.show(fig)
-    
+    plt.show(fig)   
     
 def plot_iter_gs(final_im, gal_target, y, k):
     
@@ -151,8 +145,6 @@ def plot_iter_gs(final_im, gal_target, y, k):
 
     plt.show(fig)
     
- 
-    
 def plot_iter_np(final_im, gal, y, k):
     
     fig = plt.subplots(1,3, figsize=(25,25))
@@ -182,11 +174,10 @@ def plot_iter_np(final_im, gal, y, k):
     ax3.set_aspect(1.0/ax3.get_data_ratio())
 
     plt.show(fig)
-    
-    
-    
+      
 def comparison_np(x_opt, gal, final_gal, psf, fftconvolve, fft):
 
+    print()
     temp = np.concatenate((x_opt, gal), 1)
 
     fig = plt.figure(figsize=(20,20))
@@ -215,7 +206,7 @@ def comparison_np(x_opt, gal, final_gal, psf, fftconvolve, fft):
     plt.subplot(131)
     plt.title('Residual (Y - H*X_est)')
     ax1 = plt.gca()
-    res = np.real(fft(final_gal - fftconvolve(psf, x_opt)))
+    res = np.real(final_gal - fftconvolve(psf, x_opt))
     im1 = ax1.imshow(res)
     divider = make_axes_locatable(ax1)
     cax1 = divider.append_axes("right", size="5%", pad=0.05)
@@ -238,11 +229,10 @@ def comparison_np(x_opt, gal, final_gal, psf, fftconvolve, fft):
     plt.colorbar(im3, cax=cax3)
 
     plt.show(fig2)    
-    
-    
-    
+       
 def comparison_fft(x_opt, gal_target_tf, gal_input_tf, psf_tf, fftconvolve, fft):
 
+    print()
     temp = tf.concat([x_opt, gal_target_tf], 1)
 
     fig = plt.figure(figsize=(20,20))
@@ -267,10 +257,9 @@ def comparison_fft(x_opt, gal_target_tf, gal_input_tf, psf_tf, fftconvolve, fft)
 
     plt.tight_layout()
 
-
     fig2 = plt.subplots(1,3, figsize=(24,24))
     plt.subplot(131)
-    plt.title('Residual (Y - H*X_est)')
+    plt.title('FFT [Residual (Y - H*X_est)]')
     ax1 = plt.gca()
     residual = fft(gal_input_tf - fftconvolve(psf_tf, tf.cast(x_opt, tf.float32)))
     im1 = ax1.imshow(tf.keras.backend.get_value(residual))
@@ -294,4 +283,62 @@ def comparison_fft(x_opt, gal_target_tf, gal_input_tf, psf_tf, fftconvolve, fft)
     cax3 = divider.append_axes("right", size="5%", pad=0.05)
     plt.colorbar(im3, cax=cax3)
 
-    plt.show(fig2)
+    plt.show(fig2)   
+    
+def plot_gal_psf_radio(gal_input, gal_target, psf, sigma_noise, SNR_D):
+    
+    print()
+    print()
+    plt.figure(figsize=(19,19))
+    plt.subplot(131) 
+    plt.imshow(gal_input); plt.title("Input Noisy Galaxy"); plt.colorbar(shrink=0.24)
+
+    plt.subplot(132)
+    plt.imshow(gal_target); plt.title("Target Galaxy"); plt.colorbar(shrink=0.24)
+
+    plt.subplot(133)
+    plt.imshow(psf); plt.title('PSF'); plt.colorbar(shrink=0.24)
+    plt.show()
+
+    plt.figure(figsize=(19,19))
+    plt.subplot(131)
+    plt.imshow(gal_input, cmap='gist_stern'); plt.title("cmap = gist_stern"); plt.colorbar(shrink=0.24)
+
+    plt.subplot(132)
+    plt.imshow(gal_target, cmap='gist_stern'); plt.title("cmap = gist_stern"); plt.colorbar(shrink=0.24)
+
+    plt.subplot(133)
+    plt.imshow(psf, cmap='gist_stern'); plt.title("cmap = gist_stern"); plt.colorbar(shrink=0.24)
+    plt.show()
+
+    print('SNR (in Direct Space) =', SNR_D)
+    print('Noise Std (in Direct Space) =', sigma_noise)
+    print('PSF max. pixel value = ', np.max(psf)) 
+    
+def plot_gal_psf_opt(gal_input, gal_target, psf, sigma_noise, SNR):
+    
+    plt.figure(figsize=(19,19))
+    plt.subplot(131) 
+    plt.imshow(gal_input); plt.title("Input Noisy Galaxy"); plt.colorbar(shrink=0.24)
+
+    plt.subplot(132)
+    plt.imshow(gal_target); plt.title("Target Galaxy"); plt.colorbar(shrink=0.24)
+
+    plt.subplot(133)
+    plt.imshow(psf); plt.title('PSF'); plt.colorbar(shrink=0.24)
+    plt.show()
+
+    plt.figure(figsize=(19,19))
+    plt.subplot(131)
+    plt.imshow(gal_input, cmap='gist_stern'); plt.title("cmap = gist_stern"); plt.colorbar(shrink=0.24)
+
+    plt.subplot(132)
+    plt.imshow(gal_target, cmap='gist_stern'); plt.title("cmap = gist_stern"); plt.colorbar(shrink=0.24)
+
+    plt.subplot(133)
+    plt.imshow(psf, cmap='gist_stern'); plt.title("cmap = gist_stern"); plt.colorbar(shrink=0.24)
+    plt.show()
+
+    print('Noise Std =', sigma_noise)
+    print('SNR =', SNR)
+    print('PSF Flux = ', np.sum(psf))
