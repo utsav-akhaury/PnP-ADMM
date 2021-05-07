@@ -104,20 +104,45 @@ def istar2d(wtOri,gen2=True):
 
 def conv(image, kernel):
     
-    x = np.fft.fftshift(np.fft.fftn(image))
-    y = np.fft.fftshift(np.fft.fftn(np.rot90(kernel, 2)))
-
-    return np.real(np.fft.fftshift(np.fft.ifftn(np.fft.ifftshift(x * y))))
+    return convolve2d(image, kernel, mode='same')
 
 def ST(image, beta, sigma, psf):
     
-    # HABIBI, PUT WHATEVER SIGMA YOU WANT HERE, PLEASE & THANKS
     scl = int(np.ceil(np.log2(np.sqrt(image.size))))
     shape = np.array(image.shape)
     dirac = np.zeros(shape)
     dirac[shape[0]//2, shape[1]//2] = 1.
     scales = star2d(dirac, scale=scl)
     std_scales = np.array([np.linalg.norm(conv(scale, psf),'fro') for scale in scales])
+  
+    sigma_scales = sigma * std_scales
+
+    # Set k for k-sigma thresholding
+    k = 3
+
+    # (k+plus) for the finest scale
+    plus = 0
+
+    # build thresholds
+    thresholds = np.array([(k+plus)*sigma_scales[:1], k*sigma_scales[1:]])
+
+    # Starlet transform of image
+    alpha = star2d(image, scale=scl)
+
+    # Multiscale threshold except coarse scale
+    alpha[:-1] = MS_soft_thresh(alpha[:-1], beta*thresholds[-1])
+
+    # Apply the adjoint of the starlets on alpha
+    return istar2d(alpha), thresholds, scales
+
+def ST_radio(image, beta, sigma, psf):
+    
+    scl = int(np.ceil(np.log2(np.sqrt(image.size))))
+    shape = np.array(image.shape)
+    dirac = np.zeros(shape)
+    dirac[shape[0]//2, shape[1]//2] = 1.
+    scales = star2d(dirac, scale=scl)
+    std_scales = np.array([np.linalg.norm(conv(conv(psf, np.rot90(psf, 2)), scale),'fro') for scale in scales])
   
     sigma_scales = sigma * std_scales
 
