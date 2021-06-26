@@ -3,9 +3,9 @@ from skimage.measure import label
 import tensorflow as tf
 
 def fftconvolve(image, kernel):
-   
-    x = tf.signal.fftshift(tf.signal.fft2d(tf.cast(image, tf.complex64)))
-    y = tf.signal.fftshift(tf.signal.fft2d(tf.cast(kernel, tf.complex64)))
+
+    x = tf.signal.fftshift(tf.signal.fft2d(tf.signal.ifftshift(tf.cast(image, tf.complex64))))
+    y = tf.signal.fftshift(tf.signal.fft2d(tf.signal.ifftshift(tf.cast(kernel, tf.complex64))))
     result = tf.math.real(tf.signal.fftshift(tf.signal.ifft2d(tf.signal.ifftshift(x * y))))
 
     return tf.cast(result, tf.float32)
