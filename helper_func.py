@@ -4,11 +4,10 @@ import tensorflow as tf
 
 def fftconvolve(image, kernel):
 
-    x = tf.signal.fftshift(tf.signal.fft2d(tf.signal.ifftshift(tf.cast(image, tf.complex64))))
-    y = tf.signal.fftshift(tf.signal.fft2d(tf.signal.ifftshift(tf.cast(kernel, tf.complex64))))
-    result = tf.math.real(tf.signal.fftshift(tf.signal.ifft2d(tf.signal.ifftshift(x * y))))
-
-    return tf.cast(result, tf.float32)
+    image = tf.expand_dims(tf.expand_dims(image, axis=0), axis=-1)
+    kernel = tf.expand_dims(tf.expand_dims(kernel, axis=-1), axis=-1)
+    result = tf.cast(tf.nn.conv2d(image, kernel, strides=[1, 1, 1, 1], padding='SAME'), tf.float32)
+    return tf.squeeze(result)
 
 def fft(data):
 
@@ -27,6 +26,16 @@ def nmse(signal_1, signal_2):
 def soft_thresh(data, threshold):
     
     return tf.cast(tf.math.sign(data) * (data - threshold) * tf.cast(data >= threshold, tf.float32), tf.float32)
+
+def sigma_mad(signal):
+    
+    """This function returns the estimate of the standard deviation of White
+    Additive Gaussian Noise using the Mean Absolute Deviation method (MAD).
+    INPUT: signal, Numpy Array
+    OUTPUT: sigma, scalar"""
+    
+    sigma = 1.4826 * np.median(np.abs(signal - np.median(signal)))
+    return sigma
 
 def blob_mask(img,background=0,connectivity=2):
     
