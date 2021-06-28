@@ -4,23 +4,23 @@ import matplotlib.pyplot as plt
 from matplotlib import gridspec
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 
-def comparison(x_opt, gal_target_tf, gal_input_tf, psf_tf, fftconvolve):
+def comparison(x_opt, gal_target, gal_input_tf, psf_tf, fftconvolve):
 
     print()
-    temp = tf.concat([x_opt, gal_target_tf], 1)
+    temp = tf.concat([x_opt, gal_target], 1)
 
     fig = plt.figure(figsize=(20,20))
-    gs = gridspec.GridSpec(1, 2, width_ratios=[1, 2]) 
+    gs = gridspec.GridSpec(1, 2, width_ratios=[2, 1]) 
 
-    ax1 = plt.subplot(gs[0])
-    plt.title('Observation')
+    ax1 = plt.subplot(gs[1])
+    plt.title('Intensity Plot (Central Slice)')
     ax1 = plt.gca()
-    im1 = ax1.imshow(gal_input_tf)
-    divider = make_axes_locatable(ax1)
-    cax1 = divider.append_axes("right", size="5%", pad=0.05)
-    plt.colorbar(im1, cax=cax1)
+    ax1.plot(x_opt[gal_target.shape[0]//2,:], label='rec_im')           
+    ax1.plot(gal_target[gal_target.shape[0]//2,:], label='target')  
+    plt.legend()
+    ax1.set_aspect(1.0/ax1.get_data_ratio())    
 
-    ax2 = plt.subplot(gs[1])
+    ax2 = plt.subplot(gs[0])
     plt.title('Optimal Reconstruction vs. Ground Truth')
     ax2 = plt.gca()
     im2 = ax2.imshow(tf.keras.backend.get_value(temp))
@@ -52,7 +52,7 @@ def comparison(x_opt, gal_target_tf, gal_input_tf, psf_tf, fftconvolve):
     plt.subplot(133)
     plt.title('Error (X_true - X_est)')
     ax3 = plt.gca()
-    im3 = ax3.imshow(tf.keras.backend.get_value(gal_target_tf - x_opt))
+    im3 = ax3.imshow(gal_target - x_opt)
     divider = make_axes_locatable(ax3)
     cax3 = divider.append_axes("right", size="5%", pad=0.05)
     plt.colorbar(im3, cax=cax3)
