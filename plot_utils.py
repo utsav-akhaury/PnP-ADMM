@@ -82,6 +82,7 @@ def nmse_cost(nmse_arr, cost, n_iter):
     print('\nMinimum NMSE = {} (at {} iterations)'.format(min_nmse, min_iter_nmse))
     print('Minimum Cost = {} (at {} iterations)'.format(min_cost, min_iter_cost))    
     plt.show()    
+    print('\n_______________________________________________________________________________________________________\n\n')
     
 def plot_iter(final_im, gal_target, y, k):
     
@@ -288,6 +289,35 @@ def comparison_fft(x_opt, gal_target_tf, gal_input_tf, psf_tf, fftconvolve, fft)
 def plot_gal_psf_radio(gal_input, gal_target, psf, sigma_noise, SNR_D):
     
     print()
+    plt.figure(figsize=(19,19))
+    plt.subplot(131) 
+    plt.imshow(gal_input); plt.title("MeerKAT Observation"); plt.colorbar(shrink=0.24)
+
+    plt.subplot(132)
+    plt.imshow(gal_target); plt.title("Target"); plt.colorbar(shrink=0.24)
+
+    plt.subplot(133)
+    plt.imshow(psf); plt.title('PSF'); plt.colorbar(shrink=0.24)
+    plt.show()
+
+#     plt.figure(figsize=(19,19))
+#     plt.subplot(131)
+#     plt.imshow(gal_input, cmap='gist_stern'); plt.title("cmap = gist_stern"); plt.colorbar(shrink=0.24)
+
+#     plt.subplot(132)
+#     plt.imshow(gal_target, cmap='gist_stern'); plt.title("cmap = gist_stern"); plt.colorbar(shrink=0.24)
+
+#     plt.subplot(133)
+#     plt.imshow(psf, cmap='gist_stern'); plt.title("cmap = gist_stern"); plt.colorbar(shrink=0.24)
+#     plt.show()
+
+    print('SNR (in Direct Space) =', SNR_D)
+    print('Noise Std (in Direct Space) =', sigma_noise)
+    print('PSF Flux = ', np.sum(psf))
+    
+def plot_gal_psf_opt(gal_input, gal_target, psf, sigma_noise, SNR):
+    
+    print()
     print()
     plt.figure(figsize=(19,19))
     plt.subplot(131) 
@@ -300,44 +330,16 @@ def plot_gal_psf_radio(gal_input, gal_target, psf, sigma_noise, SNR_D):
     plt.imshow(psf); plt.title('PSF'); plt.colorbar(shrink=0.24)
     plt.show()
 
-    plt.figure(figsize=(19,19))
-    plt.subplot(131)
-    plt.imshow(gal_input, cmap='gist_stern'); plt.title("cmap = gist_stern"); plt.colorbar(shrink=0.24)
+#     plt.figure(figsize=(19,19))
+#     plt.subplot(131)
+#     plt.imshow(gal_input, cmap='gist_stern'); plt.title("cmap = gist_stern"); plt.colorbar(shrink=0.24)
 
-    plt.subplot(132)
-    plt.imshow(gal_target, cmap='gist_stern'); plt.title("cmap = gist_stern"); plt.colorbar(shrink=0.24)
+#     plt.subplot(132)
+#     plt.imshow(gal_target, cmap='gist_stern'); plt.title("cmap = gist_stern"); plt.colorbar(shrink=0.24)
 
-    plt.subplot(133)
-    plt.imshow(psf, cmap='gist_stern'); plt.title("cmap = gist_stern"); plt.colorbar(shrink=0.24)
-    plt.show()
-
-    print('SNR (in Direct Space) =', SNR_D)
-    print('Noise Std (in Direct Space) =', sigma_noise)
-    print('PSF max. pixel value = ', np.max(psf)) 
-    
-def plot_gal_psf_opt(gal_input, gal_target, psf, sigma_noise, SNR):
-    
-    plt.figure(figsize=(19,19))
-    plt.subplot(131) 
-    plt.imshow(gal_input); plt.title("Input Noisy Galaxy"); plt.colorbar(shrink=0.24)
-
-    plt.subplot(132)
-    plt.imshow(gal_target); plt.title("Target Galaxy"); plt.colorbar(shrink=0.24)
-
-    plt.subplot(133)
-    plt.imshow(psf); plt.title('PSF'); plt.colorbar(shrink=0.24)
-    plt.show()
-
-    plt.figure(figsize=(19,19))
-    plt.subplot(131)
-    plt.imshow(gal_input, cmap='gist_stern'); plt.title("cmap = gist_stern"); plt.colorbar(shrink=0.24)
-
-    plt.subplot(132)
-    plt.imshow(gal_target, cmap='gist_stern'); plt.title("cmap = gist_stern"); plt.colorbar(shrink=0.24)
-
-    plt.subplot(133)
-    plt.imshow(psf, cmap='gist_stern'); plt.title("cmap = gist_stern"); plt.colorbar(shrink=0.24)
-    plt.show()
+#     plt.subplot(133)
+#     plt.imshow(psf, cmap='gist_stern'); plt.title("cmap = gist_stern"); plt.colorbar(shrink=0.24)
+#     plt.show()
 
     print('Noise Std =', sigma_noise)
     print('SNR =', SNR)
