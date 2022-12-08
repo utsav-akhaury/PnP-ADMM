@@ -300,17 +300,6 @@ def plot_gal_psf_radio(gal_input, gal_target, psf, sigma_noise, SNR_D):
     plt.imshow(psf); plt.title('PSF'); plt.colorbar(shrink=0.24)
     plt.show()
 
-#     plt.figure(figsize=(19,19))
-#     plt.subplot(131)
-#     plt.imshow(gal_input, cmap='gist_stern'); plt.title("cmap = gist_stern"); plt.colorbar(shrink=0.24)
-
-#     plt.subplot(132)
-#     plt.imshow(gal_target, cmap='gist_stern'); plt.title("cmap = gist_stern"); plt.colorbar(shrink=0.24)
-
-#     plt.subplot(133)
-#     plt.imshow(psf, cmap='gist_stern'); plt.title("cmap = gist_stern"); plt.colorbar(shrink=0.24)
-#     plt.show()
-
     print('SNR (in Direct Space) =', SNR_D)
     print('Noise Std (in Direct Space) =', sigma_noise)
     print('PSF Flux = ', np.sum(psf))
@@ -329,17 +318,6 @@ def plot_gal_psf_opt(gal_input, gal_target, psf, sigma_noise, SNR):
     plt.subplot(133)
     plt.imshow(psf); plt.title('PSF'); plt.colorbar(shrink=0.24)
     plt.show()
-
-#     plt.figure(figsize=(19,19))
-#     plt.subplot(131)
-#     plt.imshow(gal_input, cmap='gist_stern'); plt.title("cmap = gist_stern"); plt.colorbar(shrink=0.24)
-
-#     plt.subplot(132)
-#     plt.imshow(gal_target, cmap='gist_stern'); plt.title("cmap = gist_stern"); plt.colorbar(shrink=0.24)
-
-#     plt.subplot(133)
-#     plt.imshow(psf, cmap='gist_stern'); plt.title("cmap = gist_stern"); plt.colorbar(shrink=0.24)
-#     plt.show()
 
     print('Noise Std =', sigma_noise)
     print('SNR =', SNR)
